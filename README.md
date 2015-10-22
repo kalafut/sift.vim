@@ -1,4 +1,19 @@
-# ag.vim #
+# sift.vim #
+
+This is the barebones start of a plugin for [sift](https://sift-tool.org/). Because I know
+almost no vimscript, I'm starting from [ag.vim](https://github.com/rking/ag.vim), which is very similiar
+in purpose. Right now this does a grand total of two things:
+
+* run "sift" instead of "ag", and look for sift's default format to populate the quickfix window
+* provide the "Sift" command in lieu of "Ag"
+
+I want to expose much of sift's functionality in an ag.vim-like fashion, but this provides immediate
+access to sift from Vim.
+
+----
+
+# Original ag.vim README:
+
 
 This plugin is a front for ag, A.K.A.
 [the_silver_searcher](https://github.com/ggreer/the_silver_searcher).  Ag can

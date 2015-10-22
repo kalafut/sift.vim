@@ -34,6 +34,9 @@ if !exists("g:ag_prg")
     " --noheading seems odd here, but see https://github.com/ggreer/the_silver_searcher/issues/361
     let g:ag_prg="ag --column --nogroup --noheading"
   endif
+
+  " just override until I figure out what I really want
+  let g:ag_prg="sift"
 endif
 
 if !exists("g:ag_apply_qmappings")
@@ -60,7 +63,7 @@ if !exists("g:ag_working_path_mode")
     let g:ag_working_path_mode = 'c'
 endif
 
-function! ag#AgBuffer(cmd, args)
+function! sift#AgBuffer(cmd, args)
   let l:bufs = filter(range(1, bufnr('$')), 'buflisted(v:val)')
   let l:files = []
   for buf in l:bufs
@@ -69,10 +72,10 @@ function! ag#AgBuffer(cmd, args)
       call add(l:files, l:file)
     endif
   endfor
-  call ag#Ag(a:cmd, a:args . ' ' . join(l:files, ' '))
+  call sift#Ag(a:cmd, a:args . ' ' . join(l:files, ' '))
 endfunction
 
-function! ag#Ag(cmd, args)
+function! sift#Sift(cmd, args)
   let l:ag_executable = get(split(g:ag_prg, " "), 0)
 
   " Ensure that `ag` is installed
@@ -102,6 +105,9 @@ function! ag#Ag(cmd, args)
   elseif !exists("g:ag_format")
     let g:ag_format="%f:%l:%c:%m"
   endif
+
+  " Use default sift output format, for now
+  let g:ag_format="%f:%l:%m"
 
   let l:grepprg_bak=&grepprg
   let l:grepformat_bak=&grepformat
@@ -192,14 +198,14 @@ function! ag#Ag(cmd, args)
   endif
 endfunction
 
-function! ag#AgFromSearch(cmd, args)
+function! sift#AgFromSearch(cmd, args)
   let search =  getreg('/')
   " translate vim regular expression to perl regular expression.
   let search = substitute(search,'\(\\<\|\\>\)','\\b','g')
-  call ag#Ag(a:cmd, '"' .  search .'" '. a:args)
+  call sift#Ag(a:cmd, '"' .  search .'" '. a:args)
 endfunction
 
-function! ag#GetDocLocations()
+function! sift#GetDocLocations()
   let dp = ''
   for p in split(&runtimepath,',')
     let p = p.'doc/'
@@ -210,9 +216,9 @@ function! ag#GetDocLocations()
   return dp
 endfunction
 
-function! ag#AgHelp(cmd,args)
-  let args = a:args.' '.ag#GetDocLocations()
-  call ag#Ag(a:cmd,args)
+function! sift#AgHelp(cmd,args)
+  let args = a:args.' '.sift#GetDocLocations()
+  call sift#Ag(a:cmd,args)
 endfunction
 
 function! s:guessProjectRoot()
